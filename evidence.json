@@ -1,0 +1,25 @@
+{
+  "note": "Reported from authenticated GitHub Actions logs; not a live benchmark",
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+  "runs": [
+    {
+      "id": 38189289839,
+      "category": "connectivity",
+      "reply": "READY",
+      "prompt_tokens": 22,
+      "completion_tokens": 48,
+      "total_tokens": 70
+    },
+    {
+      "id": 38190116887,
+      "category": "recovery",
+      "reply": "",
+      "prompt_tokens": 194,
+      "completion_tokens": 256,
+      "total_tokens": 450,
+      "functional_pass": false
+    }
+  ],
+  "verified_live_recovery": false,
+  "provider_cost_usd": null
+}
