@@ -3,7 +3,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from reliability_score import SCENARIOS, score, evaluate
+from evaluator import SCENARIOS, score, evaluate
 
 class ScoreTests(unittest.TestCase):
     def test_all_safe_cases(self):
