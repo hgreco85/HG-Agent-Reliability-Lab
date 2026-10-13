@@ -1,0 +1,28 @@
+name: Nebius revocation offline tests
+on:
+  pull_request:
+    paths:
+      - 'nebius_revocation.py'
+      - 'api/revocation.py'
+      - 'index.html'
+      - 'test_nebius_revocation.py'
+      - 'test_one_shot_gate.py'
+      - '.github/workflows/nebius-revocation-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests (no secrets, no API calls)
+        run: |
+          python3 -m unittest test_nebius_revocation.py test_one_shot_gate.py -v
+          python3 nebius_revocation.py
+          python3 -m py_compile api/revocation.py
+          python3 -c 'from api.revocation import handler; assert handler is not None'
+          python3 -c 'from pathlib import Path; s=Path("index.html").read_text(); assert "fetch(\x27/api/revocation\x27" in s'
