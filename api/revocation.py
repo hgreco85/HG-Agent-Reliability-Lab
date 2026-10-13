@@ -8,6 +8,10 @@ GATE_KEY = "hg-agent-reliability-lab:nebius:revocation:v1:spent"
 def ready():
     required = ("NEBIUS_API_KEY", "HG_DEMO_ACCESS_TOKEN",
                 "KV_REST_API_URL", "KV_REST_API_TOKEN")
+    key = os.getenv("NEBIUS_API_KEY", "")
+    # Never forward a masked/copy-pasted credential or whitespace to the provider.
+    if not key or "*" in key or key != key.strip():
+        return False
     return os.getenv("HG_NEBIUS_LIVE_ENABLED") == "YES" and all(os.getenv(k) for k in required)
 
 def claim_once():
