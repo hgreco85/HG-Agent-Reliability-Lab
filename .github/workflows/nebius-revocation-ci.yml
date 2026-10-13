@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'nebius_revocation.py'
+      - 'api/revocation.py'
+      - 'index.html'
       - 'test_nebius_revocation.py'
       - '.github/workflows/nebius-revocation-ci.yml'
   workflow_dispatch:
@@ -20,3 +22,6 @@ jobs:
         run: |
           python3 -m unittest test_nebius_revocation.py -v
           python3 nebius_revocation.py
+          python3 -m py_compile api/revocation.py
+          python3 -c 'from api.revocation import handler; assert handler is not None'
+          python3 -c 'from pathlib import Path; s=Path("index.html").read_text(); assert "fetch(\x27/api/revocation\x27" in s'
