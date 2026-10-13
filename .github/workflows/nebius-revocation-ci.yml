@@ -1,5 +1,11 @@
 name: Nebius revocation offline tests
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/nebius_diagnostic.py'
+      - 'test_nebius_diagnostic.py'
+      - '.github/workflows/nebius-revocation-ci.yml'
   pull_request:
     paths:
       - 'nebius_revocation.py'
@@ -7,6 +13,8 @@ on:
       - 'index.html'
       - 'test_nebius_revocation.py'
       - 'test_one_shot_gate.py'
+      - 'api/nebius_diagnostic.py'
+      - 'test_nebius_diagnostic.py'
       - '.github/workflows/nebius-revocation-ci.yml'
   workflow_dispatch:
 
@@ -21,8 +29,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run tests (no secrets, no API calls)
         run: |
-          python3 -m unittest test_nebius_revocation.py test_one_shot_gate.py -v
+          python3 -m unittest test_nebius_revocation.py test_one_shot_gate.py test_nebius_diagnostic.py -v
           python3 nebius_revocation.py
-          python3 -m py_compile api/revocation.py
+          python3 -m py_compile api/revocation.py api/nebius_diagnostic.py
           python3 -c 'from api.revocation import handler; assert handler is not None'
           python3 -c 'from pathlib import Path; s=Path("index.html").read_text(); assert "fetch(\x27/api/revocation\x27" in s'
