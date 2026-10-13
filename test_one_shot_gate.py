@@ -50,5 +50,37 @@ class OneShotTests(unittest.TestCase):
         with patch.dict(os.environ, {**ENV, "KV_REST_API_URL": "http://localhost"}, clear=True):
             self.assertFalse(api.claim_once())
 
+
+    def test_upstream_status_preserved_without_retry(self):
+        import urllib.error
+        from unittest.mock import MagicMock
+        for code in (401, 403, 429, 500):
+            with self.subTest(upstream_status=code):
+                instance = object.__new__(api.handler)
+                instance.headers = {"X-Demo-Token": "test-token", "Content-Length": "0"}
+                instance.reply = MagicMock()
+                err = urllib.error.HTTPError("https://example.invalid", code, "mock", {}, None)
+                with patch.dict(os.environ, ENV, clear=True), \
+                     patch.object(api, "claim_once", return_value=True) as claim, \
+                     patch("urllib.request.urlopen", side_effect=err) as upstream:
+                    instance.do_POST()
+                claim.assert_called_once()
+                upstream.assert_called_once()
+                args = instance.reply.call_args.args
+                self.assertEqual(args[0], 502)
+                self.assertEqual(args[1]["upstream_status"], code)
+                self.assertFalse(args[1]["live_api"])
+
+    def test_spent_gate_never_calls_model(self):
+        from unittest.mock import MagicMock
+        instance = object.__new__(api.handler)
+        instance.headers = {"X-Demo-Token": "test-token", "Content-Length": "0"}
+        instance.reply = MagicMock()
+        with patch.dict(os.environ, ENV, clear=True), \
+             patch.object(api, "claim_once", return_value=False), \
+             patch("urllib.request.urlopen", side_effect=AssertionError("model call forbidden")):
+            instance.do_POST()
+        self.assertEqual(instance.reply.call_args.args[0], 409)
+
 if __name__ == "__main__":
     unittest.main()
