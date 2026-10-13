@@ -5,7 +5,7 @@ import os
 import urllib.request
 import urllib.error
 
-CHECK_KEY = "hg-agent-reliability-lab:nebius:model-catalog-check:v1:spent"
+CHECK_KEY = "hg-agent-reliability-lab:nebius:model-catalog-check:v2:corrected-key:spent"
 CATALOG = "https://api.tokenfactory.nebius.com/v1/models"
 EXPECTED = "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 
