@@ -6,6 +6,7 @@ on:
       - 'api/revocation.py'
       - 'index.html'
       - 'test_nebius_revocation.py'
+      - 'test_one_shot_gate.py'
       - '.github/workflows/nebius-revocation-ci.yml'
   workflow_dispatch:
 
@@ -20,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run tests (no secrets, no API calls)
         run: |
-          python3 -m unittest test_nebius_revocation.py -v
+          python3 -m unittest test_nebius_revocation.py test_one_shot_gate.py -v
           python3 nebius_revocation.py
           python3 -m py_compile api/revocation.py
           python3 -c 'from api.revocation import handler; assert handler is not None'
