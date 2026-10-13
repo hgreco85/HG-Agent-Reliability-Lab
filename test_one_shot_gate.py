@@ -5,8 +5,8 @@ from unittest.mock import patch
 from api import revocation as api
 
 ENV = {"NEBIUS_API_KEY": "dummy", "HG_DEMO_ACCESS_TOKEN": "test-token",
-       "UPSTASH_REDIS_REST_URL": "https://example.upstash.io",
-       "UPSTASH_REDIS_REST_TOKEN": "dummy", "HG_NEBIUS_LIVE_ENABLED": "YES"}
+       "KV_REST_API_URL": "https://example.upstash.io",
+       "KV_REST_API_TOKEN": "dummy", "HG_NEBIUS_LIVE_ENABLED": "YES"}
 
 class FakeResponse:
     def __init__(self, result): self.result = result
@@ -19,7 +19,7 @@ class OneShotTests(unittest.TestCase):
         with patch.dict(os.environ, {**ENV, "HG_NEBIUS_LIVE_ENABLED": ""}, clear=True):
             self.assertFalse(api.ready())
     def test_missing_store_disables(self):
-        with patch.dict(os.environ, {**ENV, "UPSTASH_REDIS_REST_TOKEN": ""}, clear=True):
+        with patch.dict(os.environ, {**ENV, "KV_REST_API_TOKEN": ""}, clear=True):
             self.assertFalse(api.ready())
     def test_atomic_set_nx(self):
         def check(req, timeout):
@@ -34,7 +34,7 @@ class OneShotTests(unittest.TestCase):
         with patch.dict(os.environ, ENV, clear=True), patch("urllib.request.urlopen", side_effect=TimeoutError):
             self.assertFalse(api.claim_once())
     def test_insecure_url_rejected(self):
-        with patch.dict(os.environ, {**ENV, "UPSTASH_REDIS_REST_URL": "http://localhost"}, clear=True):
+        with patch.dict(os.environ, {**ENV, "KV_REST_API_URL": "http://localhost"}, clear=True):
             self.assertFalse(api.claim_once())
 
 if __name__ == "__main__":
