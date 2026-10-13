@@ -18,6 +18,12 @@ class OneShotTests(unittest.TestCase):
     def test_disabled_by_default(self):
         with patch.dict(os.environ, {**ENV, "HG_NEBIUS_LIVE_ENABLED": ""}, clear=True):
             self.assertFalse(api.ready())
+    def test_masked_nebius_secret_disables_live(self):
+        for bad_key in ("masked***", " spaces ", "key\n"):
+            with self.subTest(key_type=repr(bad_key)):
+                with patch.dict(os.environ, {**ENV, "NEBIUS_API_KEY": bad_key}, clear=True):
+                    self.assertFalse(api.ready())
+
     def test_missing_store_disables(self):
         with patch.dict(os.environ, {**ENV, "KV_REST_API_TOKEN": ""}, clear=True):
             self.assertFalse(api.ready())
