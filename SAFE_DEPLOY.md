@@ -5,7 +5,7 @@ The Vercel endpoint is **disabled by default**. CI uses mocks and never calls Ne
 ## Server-only secrets and flags
 - `NEBIUS_API_KEY`: Sensitive, already present in Vercel; validity is unverified.
 - `HG_DEMO_ACCESS_TOKEN`: independent random secret, Sensitive; never put Nebius API key in webpage.
-- `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`: Sensitive; use one dedicated free Redis REST database with verified non-billable hard limits.
+- `KV_REST_API_URL` and `KV_REST_API_TOKEN`: Sensitive; use one dedicated free Redis REST database with verified non-billable hard limits.
 - `HG_NEBIUS_LIVE_ENABLED`: must equal `YES` to allow live requests. Keep absent until everything is checked.
 
 ## One-shot invariant
