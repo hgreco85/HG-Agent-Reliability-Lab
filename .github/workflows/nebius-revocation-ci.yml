@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'api/revocation.py'
+      - 'test_one_shot_gate.py'
       - 'api/nebius_diagnostic.py'
       - 'test_nebius_diagnostic.py'
       - '.github/workflows/nebius-revocation-ci.yml'
