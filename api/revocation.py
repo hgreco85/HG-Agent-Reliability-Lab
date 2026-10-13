@@ -7,17 +7,17 @@ GATE_KEY = "hg-agent-reliability-lab:nebius:revocation:v1:spent"
 
 def ready():
     required = ("NEBIUS_API_KEY", "HG_DEMO_ACCESS_TOKEN",
-                "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN")
+                "KV_REST_API_URL", "KV_REST_API_TOKEN")
     return os.getenv("HG_NEBIUS_LIVE_ENABLED") == "YES" and all(os.getenv(k) for k in required)
 
 def claim_once():
     """Atomic SET NX without expiration. Never undo a reservation or retry."""
-    url = os.environ["UPSTASH_REDIS_REST_URL"].rstrip("/")
+    url = os.environ["KV_REST_API_URL"].rstrip("/")
     if not url.startswith("https://"):
         return False
     req = urllib.request.Request(
         url, data=json.dumps(["SET", GATE_KEY, "spent", "NX"]).encode(),
-        headers={"Authorization": "Bearer " + os.environ["UPSTASH_REDIS_REST_TOKEN"],
+        headers={"Authorization": "Bearer " + os.environ["KV_REST_API_TOKEN"],
                  "Content-Type": "application/json"}, method="POST")
     try:
         with urllib.request.urlopen(req, timeout=5) as response:
