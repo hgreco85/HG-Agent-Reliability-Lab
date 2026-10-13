@@ -26,6 +26,26 @@ def claim_once():
     except (urllib.error.URLError, TimeoutError, ValueError, OSError):
         return False
 
+def gate_status():
+    """Read-only status from Redis. No Nebius request, no SET, no resets."""
+    url = os.getenv("KV_REST_API_URL", "").rstrip("/")
+    token = os.getenv("KV_REST_API_READ_ONLY_TOKEN", "")
+    if not url.startswith("https://") or not token:
+        return "UNKNOWN"
+    req = urllib.request.Request(
+        url, data=json.dumps(["GET", GATE_KEY]).encode(),
+        headers={"Authorization": "Bearer " + token,
+                 "Content-Type": "application/json"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=5) as response:
+            payload = json.load(response)
+            if not isinstance(payload, dict) or payload.get("error"):
+                return "UNKNOWN"
+            return "SPENT" if payload.get("result") == "spent" else (
+                "UNUSED" if payload.get("result") is None else "UNKNOWN")
+    except (urllib.error.URLError, TimeoutError, ValueError, OSError):
+        return "UNKNOWN"
+
 class handler(BaseHTTPRequestHandler):
     def reply(self, code, data):
         payload = json.dumps(data, ensure_ascii=False).encode()
@@ -40,7 +60,8 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.reply(200, {"status": "READY" if ready() else "DISABLED",
                          "model": "NVIDIA-Nemotron-3-Nano-30B-A3B",
-                         "authentication": "required", "max_live_calls_per_gate": 1})
+                         "authentication": "required", "max_live_calls_per_gate": 1,
+                         "gate_status": gate_status()})
 
     def do_POST(self):
         if not ready():
