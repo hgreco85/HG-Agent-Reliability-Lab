@@ -2,7 +2,7 @@
 
 Evidence-first AI-agent reliability prototype, built for the **Nebius × NVIDIA Global AI Hackathon 2026**.
 
-**[Interactive Demo](https://hg-agent-reliability-lab-nebius.vercel.app)** · **[Video Demonstration](https://youtu.be/44dX_pD3OMo)** · **[Code Repository](https://github.com/hgreco85/HG-Agent-Reliability-Lab)**
+**[Interactive Demo](https://hg-agent-reliability-lab-nebius.vercel.app)** · **[Video Demonstration](https://youtu.be/Fspprw83k0Y)** · **[Code Repository](https://github.com/hgreco85/HG-Agent-Reliability-Lab)**
 
 ---
 

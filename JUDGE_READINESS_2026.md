@@ -7,7 +7,7 @@
 ## Public Entry Points (Verified Free Access)
 - **Working Web Demo:** [https://hg-agent-reliability-lab-nebius.vercel.app](https://hg-agent-reliability-lab-nebius.vercel.app) (Verified HTTP 200, requires zero authentication or API keys).
 - **Public Source & Scorer:** [https://github.com/hgreco85/HG-Agent-Reliability-Lab](https://github.com/hgreco85/HG-Agent-Reliability-Lab) (MIT License, stdlib Python tests).
-- **Existing Video Reference:** [https://youtu.be/44dX_pD3OMo](https://youtu.be/44dX_pD3OMo) (Audit finding: conceptual slides; requires real Windows screen recording showing actual application interaction).
+- **Demonstration Video:** [https://youtu.be/Fspprw83k0Y](https://youtu.be/Fspprw83k0Y) (Live screen recording showing actual Windows 11 Chrome and terminal execution).
 - **Devpost Submission:** [https://nebiusglobalaihackathon.devpost.com/submissions/1233367-hg-agent-reliability-lab](https://nebiusglobalaihackathon.devpost.com/submissions/1233367-hg-agent-reliability-lab).
 
 ---
