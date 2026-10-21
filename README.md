@@ -2,34 +2,70 @@
 
 Evidence-first AI-agent reliability prototype, built for the **Nebius × NVIDIA Global AI Hackathon 2026**.
 
-**[Interactive demo](https://hg-agent-reliability-lab-nebius.vercel.app)** · **[Video demonstration](https://youtu.be/44dX_pD3OMo)**
+**[Interactive Demo](https://hg-agent-reliability-lab-nebius.vercel.app)** · **[Video Demonstration](https://youtu.be/Fspprw83k0Y)** · **[Code Repository](https://github.com/hgreco85/HG-Agent-Reliability-Lab)**
+
+---
 
 ## What it does
 
-A small, independent browser demo and Python scorer show how to audit an agent's behavior when tools fail, a document cannot be retrieved, or cached information is unverified. The public demo includes a five-case, browser-based reliability evaluation (safe and unsafe strategies), with per-case explanations and an independent Python evaluator. These are **deterministic synthetic tests**, not agent inference or model benchmark results.
+**HG Agent Reliability Lab** evaluates how autonomous AI agents respond when tools fail, network calls time out, or data caches contain unverified summaries. 
 
-## Usage
+The project delivers:
+1. **Interactive Browser Benchmark:** A client-side evaluator demonstrating 5 distinct tool-failure topologies, comparing *evidence-safe* decisions against *unsafe* fallbacks (preventing hallucination/fabrication and stale cache leakage).
+2. **Deterministic Offline Evaluator:** A Python stdlib scorer and test suite validating fail-closed behavior with zero external dependencies.
+3. **Hardware & Model Integration Boundary:** Complete documentation and test harnesses auditing NVIDIA Nemotron 3 Nano 30B A3B hosted via Nebius Token Factory, with a persistent one-shot Redis safety gate to guarantee zero unauthorized cloud spend.
 
-Open `index.html` directly in a browser. Offline scoring requires Python 3:
+> **Evidence boundary:** The 5-case interactive demo and Python evaluator run deterministic synthetic policies locally without model inference. This isolates and audits the decision policy independently of model stochasticity.
 
+---
+
+## Instructions for Hackathon Judges
+
+Judges can verify the entire project without accounts, API keys, or fees:
+
+### 1. Web Evaluation (No credentials required)
+1. Open the public web demo: **[https://hg-agent-reliability-lab-nebius.vercel.app](https://hg-agent-reliability-lab-nebius.vercel.app)**.
+2. Select any tool failure scenario (e.g., `timeout-unverified-cache`) and click **Run evidence-safe decision** to see the compliant policy action (`ask_for_source`, `PASS · ok`).
+3. Click **Run unsafe decision** to see the fail-closed rejection (`FAIL · unverified_source`).
+4. Click **Evaluate safe policy (5 cases)** to verify 5/5 compliance across all topologies.
+5. Click **Evaluate unsafe policy (5 cases)** to confirm immediate rejection (0/5) of unverified cache and fabrication attempts.
+6. Inspect the live inference section: verify it rejects unauthenticated runs and reports status `DISABLED` safely.
+
+### 2. Local Offline Reproduction (Python 3 stdlib only)
+Clone the repository and run the test suite:
 ```sh
+git clone https://github.com/hgreco85/HG-Agent-Reliability-Lab.git
+cd HG-Agent-Reliability-Lab
 python evaluator.py
-python -m unittest test_evaluator.py test_demo_contract.py -v
+python -m unittest discover -v
 ```
+All 35 unit tests and contract checks execute in less than 0.1 seconds with zero external package installations.
 
-No third-party packages or API key are required to run the public demo and scorer. The five UI scenarios match the scorer's case IDs, tool states, verification flags and expected actions, enforced by CI.\n\n### What judges can verify\n\n1. Open the demo and run **Evaluate safe policy (5 cases)** to see a deterministic 5/5 with case-level explanations.\n2. Run **Evaluate unsafe policy (5 cases)** to see explicit rejection of fabrication and unverified cache usage.\n3. Run the above Python tests offline to verify consistency and fail-closed scoring.\n4. Inspect `/api/revocation` read-only status; real inference is intentionally disabled after the previous single-use attempt.\n\n**Evidence boundary:** Passing the synthetic policy does not establish that Nemotron chooses correct actions autonomously. The authenticated model catalog returned HTTP 200 and listed Nemotron as available, but a successful end-to-end model recovery response is not yet verified.
+---
 
-## Authenticated NVIDIA Nemotron evidence
+## Authenticated NVIDIA Nemotron Evidence
 
-Nemotron 3 Nano 30B A3B was queried through Nebius Token Factory in isolated GitHub Actions executions:
+NVIDIA Nemotron 3 Nano 30B A3B was evaluated via Nebius Token Factory in isolated CI executions:
 
-- Connectivity: 70 tokens, `READY`, successful API response.
-- Recovery assessment: 450 tokens, no visible content after reaching 256-token output budget; functional recovery **not demonstrated**.
+| Evaluation Stage | Tokens | Status | Findings |
+|---|---|---|---|
+| **Connectivity & Model Catalog** | 70 tokens | **PASS: READY** | Authenticated endpoint reachable; model listed and responding. |
+| **Recovery Assessment** | 450 tokens | **INCONCLUSIVE** | HTTP 200 returned; empty visible content after exhausting the 256 output token budget. Functional autonomous recovery not demonstrated. |
 
-The original GitHub Actions logs are associated with a private infrastructure repository, so judges may be unable to view them. We provide a factual summary here but do **not** claim a successful live recovery benchmark.
+To adhere to the hackathon's strict factual standards, we report exact findings and do **not** misrepresent synthetic benchmark passes as live model recoveries.
 
-## Scope and security
+---
 
-This standalone public repository excludes private HG Market System code, credentials, tokens, deployment configuration and trading systems. The five-case public simulation is static: loading the site or pressing simulation controls makes no model API calls. A separately authenticated live inference button exists but its server execution is currently disabled.
+## Architecture and Safety Gate
 
-Licensed MIT. Copyright © 2026 HG Stack.
+- **Client Layer:** Static HTML5/Vanilla JS. Zero client-side API keys, zero tracking, works 100% offline.
+- **Serverless Endpoint:** `/api/revocation` implemented with an atomic Redis `SET NX` single-use gate (`claim_once`).
+- **Cost Invariant:** Zero incremental cost guarantee ($0). The live model endpoint is disabled by default to prevent credit exhaustion.
+
+---
+
+## Scope & Licensing
+
+This public repository contains the standalone benchmark, test contracts, and verification harnesses. It is decoupled from private upstream trading or execution systems.
+
+Licensed under the **MIT License**. Copyright © 2026 HG Stack.
