@@ -32,7 +32,8 @@ def call_cloud_api(
         data = resp.read()
         parsed = json.loads(data.decode("utf-8"))
         content = parsed["choices"][0]["message"]["content"]
-        return {"source": "cloud", "content": content, "model": parsed.get("model", "cloud-frontier-model")}
+        return {"source": "cloud", "provider": "cloud", "content": content,
+                "model": parsed.get("model") or "unknown_cloud_model"}
 
 
 def call_local_ollama(
@@ -59,7 +60,8 @@ def call_local_ollama(
     with open_fn(req, timeout=timeout) as resp:
         data = resp.read()
         parsed = json.loads(data.decode("utf-8"))
-        return {"source": "local_ollama", "content": parsed["response"], "model": model_name}
+        return {"source": "local_ollama", "provider": "ollama", "content": parsed["response"],
+                "model": parsed.get("model") or model_name, "not_nemotron": True}
 
 
 class ModelFallbackCascade:
@@ -92,7 +94,7 @@ class ModelFallbackCascade:
                 opener=self.opener,
                 timeout=self.timeout,
             )
-            self.audit_log.append({"stage": "cloud", "status": "success"})
+            self.audit_log.append({"stage": "cloud", "status": "success", "model": result["model"]})
             return result
         except Exception as cloud_err:
             self.audit_log.append({
@@ -111,7 +113,7 @@ class ModelFallbackCascade:
                 opener=self.opener,
                 timeout=self.timeout,
             )
-            self.audit_log.append({"stage": "local_ollama", "status": "success"})
+            self.audit_log.append({"stage": "local_ollama", "status": "success", "model": result["model"]})
             return result
         except Exception as local_err:
             self.audit_log.append({
