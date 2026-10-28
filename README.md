@@ -17,7 +17,7 @@ python evaluator.py
 python -m unittest test_evaluator.py test_demo_contract.py -v
 ```
 
-No third-party packages or API key are required to run the public demo and scorer. The five UI scenarios match the scorer's case IDs, tool states, verification flags and expected actions, enforced by CI.\n\n### What judges can verify\n\n1. Open the demo and run **Evaluate safe policy (5 cases)** to see a deterministic 5/5 with case-level explanations.\n2. Run **Evaluate unsafe policy (5 cases)** to see explicit rejection of fabrication and unverified cache usage.\n3. Run the above Python tests offline to verify consistency and fail-closed scoring.\n4. Inspect `/api/revocation` read-only status; real inference is intentionally disabled after the previous single-use attempt.\n\n**Evidence boundary:** Passing the synthetic policy does not establish that Nemotron chooses correct actions autonomously. The authenticated model catalog returned HTTP 200 and listed Nemotron as available, but a successful end-to-end model recovery response is not yet verified.
+No third-party packages or API key are required to run the public demo and scorer. The five UI scenarios match the scorer's case IDs, tool states, verification flags and expected actions, enforced by CI.\n\n### What judges can verify\n\n1. Open the demo and run **Evaluate safe policy (5 cases)** to see a deterministic 5/5 with case-level explanations.\n2. Run **Evaluate unsafe policy (5 cases)** to see explicit rejection of fabrication and unverified cache usage.\n3. Run the above Python tests offline to verify consistency and fail-closed scoring.\n4. Inspect `/api/revocation` read-only status; real inference is intentionally disabled after the previous single-use attempt.\n\n**Evidence boundary:** Passing the synthetic policy does not establish broad Nemotron reliability. One real Nebius Token Factory/Nemotron inference on 2026-10-26 reportedly returned the expected `ask_for_source` action for a single synthetic failure scenario. See [sanitized receipt](reports/nebius_one_shot_20261026_sanitized.md). Actual final metered cost is not yet verified.
 
 ## Authenticated NVIDIA Nemotron evidence
 
@@ -26,7 +26,7 @@ Nemotron 3 Nano 30B A3B was queried through Nebius Token Factory in isolated Git
 - Connectivity: 70 tokens, `READY`, successful API response.
 - Recovery assessment: 450 tokens, no visible content after reaching 256-token output budget; functional recovery **not demonstrated**.
 
-The original GitHub Actions logs are associated with a private infrastructure repository, so judges may be unable to view them. We provide a factual summary here but do **not** claim a successful live recovery benchmark.
+A later one-shot real test returned `ask_for_source` on a synthetic tool failure. The [sanitized evidence file](reports/nebius_one_shot_20261026_sanitized.md) links its original workflow run and reports 316 tokens. Private workflow logs may not be readable by judges; this public receipt does not contain credentials. It proves one reported successful case, **not** a broad live recovery benchmark or real local fallback. Final Nebius billing remains unverified.
 
 ## Scope and security
 
