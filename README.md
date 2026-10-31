@@ -51,8 +51,9 @@ NVIDIA Nemotron 3 Nano 30B A3B was evaluated via Nebius Token Factory in isolate
 |---|---|---|---|
 | **Connectivity & Model Catalog** | 70 tokens | **PASS: READY** | Authenticated endpoint reachable; model listed and responding. |
 | **Recovery Assessment** | 450 tokens | **INCONCLUSIVE** | HTTP 200 returned; empty visible content after exhausting the 256 output token budget. Functional autonomous recovery not demonstrated. |
+| **Single synthetic abstention (2026-10-26)** | 316 tokens | **PASS: `ask_for_source`** | One reported real inference using `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` correctly requested a verified source instead of relying on unverified cache; [sanitized receipt](reports/nebius_one_shot_20261026_sanitized.md) and [original run](https://github.com/hgreco85/HG-Market-System/actions/runs/40407357142). |
 
-To adhere to the hackathon's strict factual standards, we report exact findings and do **not** misrepresent synthetic benchmark passes as live model recoveries.
+**Scope:** This is one reported successful synthetic test case, **not** a broad live recovery benchmark, operational integration, or tested cloud-to-Ollama fallback. The demo and five-case evaluator remain deterministic and do not invoke Nemotron. The final metered Nebius cost is **not verified**. This documentation change makes no new inference requests and does not update the hackathon submission.
 
 ---
 
